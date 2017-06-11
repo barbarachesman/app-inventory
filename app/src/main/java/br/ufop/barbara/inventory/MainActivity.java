@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer action = 0;
 
 
-    public ArrayList<Item> items = new ArrayList<Item>();
+    public ArrayList<Item> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +36,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+*/
         //Fill list with some data
-        items.add(new Item(102456, "Cadeira", date, "C304", "Ativo"));
-        items.add(new Item(101783, "Mesa", date, "C304", "Ativo"));
-        items.add(new Item(103204, "Datashow", date, "C304", "Ativo"));
-        items.add(new Item(104334, "Quadro", date, "C304", "Ativo"));
-        items.add(new Item(293500, "Monitor", date, "C304", "Ativo"));
-        */
 
+
+        items = ItemList.loadItems(this);
         setContentView(R.layout.activity_main);
     }
 
@@ -90,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(items==null) items = ItemList.loadItems(this);
         if(requestCode == READ_CODE || requestCode == ITEM_EDIT || requestCode == ITEM_NOVO) {
             if(resultCode == Activity.RESULT_OK) {
-                items = data.getParcelableArrayListExtra("items");
+                //items = data.getParcelableArrayListExtra("items");
                 //Code scanning worked
                 String result = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
@@ -105,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
                         Date date = new Date();
                         items.get(i).setDateInventory(date);
+                        ItemList.saveItems(this, items);
                         //Update location.. (later)
 
                         //Show changed record

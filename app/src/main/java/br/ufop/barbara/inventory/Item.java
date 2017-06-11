@@ -79,7 +79,7 @@ public class Item implements Parcelable, Serializable {
     public static final Creator<Item> CREATOR = new Creator<Item>() {
         @Override
         public Item createFromParcel(Parcel in) {
-            return new Item(in.readInt(), in.readString(), (java.util.Date) in.readSerializable(), in.readString(), in.readString());
+            return new Item(in.readInt(), in.readString(), new Date(in.readLong()), in.readString(), in.readString());
         }
 
         @Override

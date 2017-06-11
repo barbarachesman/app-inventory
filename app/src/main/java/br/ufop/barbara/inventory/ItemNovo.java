@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,7 +20,7 @@ import java.util.Date;
 
 public class ItemNovo extends AppCompatActivity {
 
-    private ArrayList<Item> items = new ArrayList<Item>();
+    private ArrayList<Item> items;
     private int posicao = -1;
 
 
@@ -28,32 +29,13 @@ public class ItemNovo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_novo);
 
+        EditText et3 = (EditText) findViewById(R.id.txtdata);
+        et3.setText("01/01/2010");
+
+        items = ItemList.loadItems(this);
     }
 
 
-    private void saveItems() {
-        FileOutputStream file ;
-        try{
-            file = this.openFileOutput("t.tmp", Context.MODE_PRIVATE);
-            ObjectOutputStream ois = new ObjectOutputStream(file);
-            ois.writeObject(items);
-            ois.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void loadItems(){
-        FileInputStream file ;
-        try{
-            file = this.openFileInput("t.tmp");
-            ObjectInputStream ois = new ObjectInputStream(file);
-            items = (ArrayList<Item>) ois.readObject();
-            ois.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     public void confirmar(View view){
         try {
@@ -65,7 +47,7 @@ public class ItemNovo extends AppCompatActivity {
             String desc = et2.getText().toString();
 
             EditText et3 = (EditText) findViewById(R.id.txtdata);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             String dataS = et3.getText().toString();
             Date data = formatter.parse(dataS);
 
@@ -82,13 +64,14 @@ public class ItemNovo extends AppCompatActivity {
             Intent it = new Intent();
             //it.putExtra("alunos", alunos);
             setResult(RESULT_OK, it);
-            saveItems();
+            ItemList.saveItems(this, items);
 
             showMessage("Cadastrado com sucesso", ItemNovo.this);
             finish();
 
         }
         catch (Exception e) {
+            e.printStackTrace();
             showMessage("Erro ao cadastrar", ItemNovo.this);
         }
 
@@ -99,10 +82,12 @@ public class ItemNovo extends AppCompatActivity {
     }
 
     public void showMessage(String Caption, Activity activity) {
+        Toast.makeText(this, Caption, Toast.LENGTH_SHORT).show();
+        /*
         AlertDialog.Builder dialogo = new AlertDialog.Builder(activity);
         dialogo.setTitle("Atencao");
         dialogo.setMessage(Caption);
         dialogo.setNeutralButton("OK", null);
-        dialogo.show();
+        dialogo.show();*/
     }
 }

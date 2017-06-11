@@ -1,11 +1,13 @@
 package br.ufop.barbara.inventory;
 
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +27,7 @@ public class ItemEdit extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadItems();
+        items = ItemList.loadItems(this);
         //Receber dados de ItemList
         Intent it = getIntent();
         Bundle params = it.getExtras();
@@ -42,7 +44,7 @@ public class ItemEdit extends AppCompatActivity {
         et2.setText("" + items.get(posicao).getDescription());
 
         EditText et3 = (EditText) findViewById(R.id.txtdata);
-        et3.setText("" + items.get(posicao).getDateInventory());
+        et3.setText(DateToString(items.get(posicao).getDateInventory()));
 
         EditText et4 = (EditText) findViewById(R.id.txtlocal);
         et4.setText("" + items.get(posicao).getLocation());
@@ -60,7 +62,7 @@ public class ItemEdit extends AppCompatActivity {
 
         EditText et3 = (EditText) findViewById(R.id.txtdata);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dataS = et3.getText().toString();
         Date data = formatter.parse(dataS);
 
@@ -75,33 +77,10 @@ public class ItemEdit extends AppCompatActivity {
         items.set(posicao, item);
 
         //Envia lista de alunos atualizada para a activity que a chamou
-        saveItems();
+        ItemList.saveItems(this, items);
         finish();
+        Toast.makeText(this, "Dados salvos", Toast.LENGTH_SHORT).show();
 
-    }
-
-    private void saveItems() {
-        FileOutputStream file ;
-        try{
-            file = this.openFileOutput("t.tmp", Context.MODE_PRIVATE);
-            ObjectOutputStream ois = new ObjectOutputStream(file);
-            ois.writeObject(items);
-            ois.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void loadItems(){
-        FileInputStream file ;
-        try{
-            file = this.openFileInput("t.tmp");
-            ObjectInputStream ois = new ObjectInputStream(file);
-            items = (ArrayList<Item>) ois.readObject();
-            ois.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 
@@ -109,11 +88,23 @@ public class ItemEdit extends AppCompatActivity {
         items.remove(posicao);
 
        // Intent it = new Intent();
-        saveItems();
+        ItemList.saveItems(this, items);
 //        it.putExtra("alunos", alunos);
         //setResult(RESULT_OK, it);
         finish();
     }
 
+    public static String DateToString(Date d) {
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = new Date();
+            String datetime = dateformat.format(d);
+            return datetime;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+    }
     
 }
