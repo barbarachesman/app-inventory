@@ -46,7 +46,6 @@ public class ItemList extends ListActivity {
         //Take item on a specific position
         Item item = (Item) this.getListAdapter().getItem(position);
 
-        if(action == 0){
             //Enviar alunos e posicao para activity ALunoEdit
             Intent it = new Intent(this, ItemEdit.class);
             //it.putExtra("alunos", alunos);
@@ -55,18 +54,6 @@ public class ItemList extends ListActivity {
             it.putExtra("item", (Parcelable) item );
             startActivityForResult(it, ITEM_EDIT);
 
-        }
-        else if(action == 1) {
-           /* ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE}, 1);
-
-            //Enviar alunos e posicao para activity ALunoCall
-            Uri uri = Uri.parse("tel:" + String.valueOf(item.phone));
-            Intent it = new Intent(Intent.ACTION_CALL, uri);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-                startActivity(it);
-            }*/
-        }
     }
 
     @Override
