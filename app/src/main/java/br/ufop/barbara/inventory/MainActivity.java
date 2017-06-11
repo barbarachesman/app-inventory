@@ -95,20 +95,26 @@ public class MainActivity extends AppCompatActivity {
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
                 Toast.makeText(this, "Result: " + result + "\nFormat: " + format, Toast.LENGTH_SHORT).show();
 
-                //Change record
-                for(int i = 0; i < items.size(); ++i) {
-                    if(items.get(i).getCode() == Integer.parseInt(result)) {
-                        //Update date inventory
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
-                        Date date = new Date();
-                        items.get(i).setDateInventory(date);
-                        ItemList.saveItems(this, items);
-                        //Update location.. (later)
+                try {
+                    int resultado = Integer.parseInt(result);
+                    //Change record
+                    for (int i = 0; i < items.size(); ++i) {
+                        if (items.get(i).getCode() == Integer.parseInt(result)) {
+                            //Update date inventory
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+                            Date date = new Date();
+                            items.get(i).setDateInventory(date);
+                            ItemList.saveItems(this, items);
+                            //Update location.. (later)
 
-                        //Show changed record
-                        Toast.makeText(this, "Item: " + items.get(i).getCode() + " inventoried at " +
-                                dateFormat.format(items.get(i).getDateInventory()), Toast.LENGTH_SHORT).show();
+                            //Show changed record
+                            Toast.makeText(this, "Item: " + items.get(i).getCode() + " inventoried at " +
+                                    dateFormat.format(items.get(i).getDateInventory()), Toast.LENGTH_SHORT).show();
+                        }
                     }
+                } catch (Exception e) {
+                    Toast.makeText(this, "Couldn't read code.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
             } else if(resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(this, "Couldn't read code.", Toast.LENGTH_SHORT).show();
